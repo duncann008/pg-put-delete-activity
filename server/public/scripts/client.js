@@ -6,7 +6,8 @@ $(document).ready(function(){
 
 function addClickHandlers() {
   $('#submitBtn').on('click', handleSubmit);
-
+  $('#bookShelf').on('click', '.delete-button', deleteBook);
+  $('#bookShelf').on('click', '.update-button', updateBook);
   // TODO - Add code for edit & delete buttons
 }
 
@@ -58,7 +59,40 @@ function renderBooks(books) {
       <tr>
         <td>${book.title}</td>
         <td>${book.author}</td>
+        <td><button class="update-button" data-id="${book.id}" data-isRead="${book.isRead}">I've read this!</button></td>
+        <td><button class="delete-button" data-id="${book.id}">Delete</button></td>
       </tr>
     `);
   }
 }
+
+function deleteBook() {
+  const bookIdToDelete = $(this).data('id');
+  $.ajax({
+    method: 'DELETE',
+    url: `/books/${bookIdToDelete}`
+  }).then((response) => {
+    console.log(response);
+    refreshBooks();
+  }).catch((err) => {
+    console.error(err);
+  })
+};
+
+function updateBook() {
+  const bookIdRead = $(this).data('id');
+  const currentIsRead = $(this).data('isRead');
+
+  console.log('bookIdRead', bookIdRead);
+  console.log('currentIsRead', currentIsRead);
+  $.ajax({
+    type: 'PUT',
+    url: `/books/${bookIdRead}`,
+    data: { currentIsRead: currentIsRead }
+  }).then((res) => {
+    refreshBooks();
+  }).catch((err) => {
+    console.error(err);
+  })
+}
+

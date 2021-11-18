@@ -28,4 +28,6 @@ th {
   text-align: left;
 }
 
-
+.strike  {
+  text-decoration: line-through;
+}
